@@ -1,0 +1,65 @@
+{
+	"name": "serverless-typescript-aws-template",
+	"version": "1.0.0",
+	"description": "Serverless project example for AWS. Built with Node.js, Serverless, Webpack and Typescript.",
+	"keywords": [
+		"Serverless",
+		"AWS",
+		"Lambda",
+		"Node.js",
+		"Typescript"
+	],
+	"main": "handler.js",
+	"scripts": {
+		"lint": "eslint . --ext js,ts --cache --fix",
+		"prettier": "prettier --list-different './**/*.{js,ts}'",
+		"prettier:write": "prettier --write './**/*.{js,ts}'",
+		"typecheck": "tsc --noEmit",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "SLS_DEBUG=* sls offline start --stage dev",
+		"debug": "export SLS_DEBUG=* && node --inspect ./node_modules/.bin/serverless offline -s dev",
+		"prod": "SLS_DEBUG=* sls offline start --stage prod",
+		"deploy": "sls deploy --stage prod"
+	},
+	"engines": {
+		"node": ">=14.15.0"
+	},
+	"dependencies": {
+		"@middy/core": "^2.5.7",
+		"@middy/http-json-body-parser": "^2.5.7",
+		"source-map-support": "^0.5.10"
+	},
+	"devDependencies": {
+		"@serverless/typescript": "^3.8.0",
+		"@types/aws-lambda": "^8.10.17",
+		"@types/node": "^17.0.23",
+		"@typescript-eslint/eslint-plugin": "^5.18.0",
+		"@typescript-eslint/parser": "^5.18.0",
+		"esbuild": "^0.14.31",
+		"eslint": "^8.12.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"fork-ts-checker-webpack-plugin": "^7.2.3",
+		"json-schema-to-ts": "^1.6.5",
+		"prettier": "^2.0.5",
+		"serverless": "^3.11.0",
+		"serverless-esbuild": "^1.26.1",
+		"serverless-offline": "^8.5.0",
+		"serverless-webpack": "^5.2.0",
+		"ts-loader": "^9.2.8",
+		"ts-node": "^10.7.0",
+		"tsconfig-paths": "^3.14.1",
+		"typescript": "^4.6.3",
+		"webpack": "^5.71.0",
+		"webpack-node-externals": "^3.0.0"
+	},
+	"author": "[Sébastien Poyer]",
+	"contributors": [
+		{
+			"name": "Shashank Shekhar",
+			"email": "shashank7200@gmail.com",
+			"url": "https://github.com/ashwamegh"
+		}
+	],
+	"license": "ISC"
+}
