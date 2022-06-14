@@ -1,35 +1,119 @@
-service: serverless-typescript-aws
+service: zemoga-challenge
 frameworkVersion: '3'
-
+useDotenv: true
 custom:
     webpack:
         webpackConfig: ./webpack.config.js
         includeModules: true
     serverless-offline:
         port: 3000
+    dynamodb:
+        stages:
+            - dev
+        start:
+            docker: true
+            port: 5000
+            inMemory: true
+            heapInitial: 200m
+            heapMax: 1g
+            migrate: true
+            seed: true
+            convertEmptyValues: true
 
 # Add the serverless-webpack plugin
 plugins:
     - serverless-webpack
     - serverless-esbuild
+    - serverless-dynamodb-local
     - serverless-offline
 
 provider:
     name: aws
     runtime: nodejs12.x
-    region: ap-south-1
+    region: us-east-2
     profile: serverless-deploy
+    stage: ${opt:stage, 'dev'}
+    logRetentionInDays: 14
+    versionFunctions: true
     apiGateway:
         minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
         shouldStartNameWithService: true
-    environment: ${file(env.yml):${opt:stage}}
+    environment:
+        APP_NAME: ${env:APP_NAME}
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: ${env:AWS_NODEJS_CONNECTION_REUSE_ENABLED}
+        NODE_OPTIONS: ${env:NODE_OPTIONS}
+        TABLE: ${env:TABLE}
+        TWITTER_CONSUMER_KEY: ${env:TWITTER_CONSUMER_KEY}
+        TWITTER_CONSUMER_SECRET: ${env:TWITTER_CONSUMER_SECRET}
+        TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
+        TWITTER_ACCESS_SECRET: ${env:TWITTER_ACCESS_SECRET}
+    iam:
+        role:
+            statements:
+                - Effect: Allow
+                  Action:
+                      - dynamodb:DescribeTable
+                      - dynamodb:Query
+                      - dynamodb:Scan
+                      - dynamodb:GetItem
+                      - dynamodb:PutItem
+                      - dynamodb:DeleteItem
+                  Resource: '*'
 
 functions:
-    hello:
-        handler: handler.hello
-        description: Example hello world endpoint
+    getPortfolios:
+        handler: handler.getPortfolios
+        description: Get Users portfolios
         events:
             - http:
                   method: get
-                  path: hello
+                  path: portfolios
                   cors: true
+
+    getPortfolio:
+        handler: handler.getPortfolio
+        events:
+            - http:
+                  method: get
+                  path: portfolios/{portfolioId}
+                  cors: true
+
+    createPortfolio:
+        handler: handler.createPortfolio
+        description: Create a new user portfolio
+        events:
+            - http:
+                  method: post
+                  path: portfolios
+                  cors: true
+
+    deletePortfolio:
+        handler: handler.deletePortfolio
+        events:
+            - http:
+                  method: delete
+                  path: portfolios/{portfolioId}
+                  cors: true
+    getTweets:
+        handler: handler.getTweets
+        events:
+            - http:
+                  method: get
+                  path: tweets/{twitterId}
+                  cors: true
+
+resources:
+    Resources:
+        PostsListTable:
+            Type: AWS::DynamoDB::Table
+            Properties:
+                TableName: ${env:TABLE}-${opt:stage, 'dev'}
+                AttributeDefinitions:
+                    - AttributeName: id
+                      AttributeType: S
+                KeySchema:
+                    - AttributeName: id
+                      KeyType: HASH
+                ProvisionedThroughput:
+                    ReadCapacityUnits: 1
+                    WriteCapacityUnits: 1
