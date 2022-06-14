@@ -16,5 +16,11 @@
   "eslint.options": {
     "extensions": [".js", ".ts", ".json"]
   },
-  "eslint.validate": ["javascript", "typescript"]
+  "eslint.validate": [
+    "javascript",
+    "typescript"
+  ],
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  }
 }
