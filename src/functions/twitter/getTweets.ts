@@ -13,8 +13,17 @@ export const getTweets = async (event: APIGatewayEvent): Promise<APIGatewayProxy
 	const roClient = twitterClient.readOnly;
 	try {
 		const userTimeline = await roClient.v1.userTimelineByUsername(twitterId, { count: 5 });
+		const headers = {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Credentials': 'true',
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+			'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT, DELETE',
+			'X-Requested-With': '*',
+		};
 
 		return {
+			headers,
 			statusCode: 200,
 			body: JSON.stringify({ userTimeline: userTimeline.tweets }),
 		};

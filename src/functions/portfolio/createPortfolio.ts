@@ -16,9 +16,18 @@ export const createPortfolio = async (event: APIGatewayEvent & CreatePortfolio):
 		active: true,
 		createdAt: new Date().toISOString(),
 	};
+	const headers = {
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Credentials': 'true',
+		'Content-Type': 'application/json',
+		'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+		'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT, DELETE',
+		'X-Requested-With': '*',
+	};
 	const portfolio = await portfolioService.createPortfolio(newPortfolio);
 
 	return {
+		headers,
 		statusCode: 201,
 		body: JSON.stringify(portfolio),
 	};
